@@ -2,14 +2,38 @@ package nl.codecastle.extension.model;
 
 import java.time.LocalDateTime;
 
+/**
+ * Object representing the test event.
+ */
 public class TestEvent {
+    /**
+     * The time stamp of the event.
+     */
     private LocalDateTime localDateTime;
+    /**
+     * The ID of the project this test belongs to. This project ID should be read from a property file.
+     */
     private String projectId;
+    /**
+     * Each test run has a unique, newly generated ID.
+     */
     private String runId;
+    /**
+     * Name of the test. The name is actually the name of the test method.
+     */
     private String testName;
+    /**
+     * Name of the test class the test belongs to.
+     */
     private String className;
+    /**
+     * The status of the test.
+     */
     private String status;
-    private String type;
+    /**
+     * The type of the event.
+     */
+    private TestEventType type;
 
     public LocalDateTime getLocalDateTime() {
         return localDateTime;
@@ -59,11 +83,11 @@ public class TestEvent {
         this.status = status;
     }
 
-    public String getType() {
+    public TestEventType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(TestEventType type) {
         this.type = type;
     }
 }

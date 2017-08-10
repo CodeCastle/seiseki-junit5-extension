@@ -3,6 +3,7 @@ package nl.codecastle.extension;
 import nl.codecastle.extension.communication.http.SimpleTestEventSender;
 import nl.codecastle.extension.communication.http.TestEventSender;
 import nl.codecastle.extension.model.TestEvent;
+import nl.codecastle.extension.model.TestEventType;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
@@ -33,47 +34,47 @@ public class SeisekiExtension implements BeforeAllCallback, AfterAllCallback,
 
     @Override
     public void afterAll(ExtensionContext extensionContext) throws Exception {
-        sendTestEvent(extensionContext, "AFTER_ALL");
+        sendTestEvent(extensionContext, TestEventType.AFTER_ALL);
     }
 
     @Override
     public void afterEach(ExtensionContext extensionContext) throws Exception {
-        sendTestMethodEvent(extensionContext, "AFTER_TEST_TARE_DOWN");
+        sendTestMethodEvent(extensionContext, TestEventType.AFTER_TEST_TARE_DOWN);
     }
 
     @Override
     public void afterTestExecution(ExtensionContext extensionContext) throws Exception {
-        sendTestMethodEvent(extensionContext, "AFTER_TEST_EXECUTION");
+        sendTestMethodEvent(extensionContext, TestEventType.AFTER_TEST_EXECUTION);
     }
 
     @Override
     public void beforeAll(ExtensionContext extensionContext) throws Exception {
-        sendTestEvent(extensionContext, "BEFORE_ALL");
+        sendTestEvent(extensionContext, TestEventType.BEFORE_ALL);
     }
 
-    private void sendTestEvent(ExtensionContext extensionContext, String eventType) {
+    private void sendTestEvent(ExtensionContext extensionContext, TestEventType eventType) {
         String className = extensionContext.getTestClass().get().getName();
         eventSender.sendEvent(getTestEvent(className, uuid, eventType));
     }
 
     @Override
     public void beforeEach(ExtensionContext extensionContext) throws Exception {
-        sendTestMethodEvent(extensionContext, "BEFORE_TEST_SETUP");
+        sendTestMethodEvent(extensionContext, TestEventType.BEFORE_TEST_SETUP);
     }
 
     @Override
     public void beforeTestExecution(ExtensionContext extensionContext) throws Exception {
-        sendTestMethodEvent(extensionContext, "BEFORE_TEST_EXECUTION");
+        sendTestMethodEvent(extensionContext, TestEventType.BEFORE_TEST_EXECUTION);
     }
 
-    private void sendTestMethodEvent(ExtensionContext extensionContext, String eventType) {
+    private void sendTestMethodEvent(ExtensionContext extensionContext, TestEventType eventType) {
         String className = extensionContext.getTestClass().get().getName();
         String testName = extensionContext.getTestMethod().get().getName();
 
         eventSender.sendEvent(getTestEvent(className, uuid, eventType, testName));
     }
 
-    private TestEvent getTestEvent(String className, String uuid, String eventType) {
+    private TestEvent getTestEvent(String className, String uuid, TestEventType eventType) {
         TestEvent testingEvent = new TestEvent();
         testingEvent.setClassName(className);
         testingEvent.setRunId(uuid);
@@ -84,7 +85,7 @@ public class SeisekiExtension implements BeforeAllCallback, AfterAllCallback,
         return testingEvent;
     }
 
-    private TestEvent getTestEvent(String className, String uuid, String eventType, String methodName) {
+    private TestEvent getTestEvent(String className, String uuid, TestEventType eventType, String methodName) {
         TestEvent testingEvent = getTestEvent(className, uuid, eventType);
         testingEvent.setTestName(methodName);
         return testingEvent;

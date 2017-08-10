@@ -3,6 +3,7 @@ package nl.codecastle.extension;
 import name.falgout.jeffrey.testing.junit5.MockitoExtension;
 import nl.codecastle.extension.communication.http.SimpleTestEventSender;
 import nl.codecastle.extension.model.TestEvent;
+import nl.codecastle.extension.model.TestEventType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,7 +45,7 @@ public class SeisekiExtensionTest {
         verify(testEventSender).sendEvent(testEventArgumentCaptor.capture());
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
-        assertGeneralTestEventParameters(testEvent, "AFTER_TEST_TARE_DOWN");
+        assertGeneralTestEventParameters(testEvent, TestEventType.AFTER_TEST_TARE_DOWN);
 
         assertThat(testEvent.getTestName()).isEqualTo("testMethodOne");
     }
@@ -59,7 +60,7 @@ public class SeisekiExtensionTest {
         verify(testEventSender).sendEvent(testEventArgumentCaptor.capture());
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
-        assertGeneralTestEventParameters(testEvent, "AFTER_TEST_EXECUTION");
+        assertGeneralTestEventParameters(testEvent, TestEventType.AFTER_TEST_EXECUTION);
 
         assertThat(testEvent.getTestName()).isEqualTo("testMethodOne");
     }
@@ -74,7 +75,7 @@ public class SeisekiExtensionTest {
         verify(testEventSender).sendEvent(testEventArgumentCaptor.capture());
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
-        assertGeneralTestEventParameters(testEvent, "BEFORE_TEST_EXECUTION");
+        assertGeneralTestEventParameters(testEvent, TestEventType.BEFORE_TEST_EXECUTION);
 
         assertThat(testEvent.getTestName()).isEqualTo("testMethodOne");
     }
@@ -89,7 +90,7 @@ public class SeisekiExtensionTest {
         verify(testEventSender).sendEvent(testEventArgumentCaptor.capture());
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
-        assertGeneralTestEventParameters(testEvent, "BEFORE_TEST_SETUP");
+        assertGeneralTestEventParameters(testEvent, TestEventType.BEFORE_TEST_SETUP);
 
         assertThat(testEvent.getTestName()).isEqualTo("testMethodOne");
     }
@@ -103,7 +104,7 @@ public class SeisekiExtensionTest {
         verify(testEventSender).sendEvent(testEventArgumentCaptor.capture());
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
-        assertGeneralTestEventParameters(testEvent, "BEFORE_ALL");
+        assertGeneralTestEventParameters(testEvent, TestEventType.BEFORE_ALL);
 
         assertThat(testEvent.getTestName()).isNullOrEmpty();
     }
@@ -117,16 +118,16 @@ public class SeisekiExtensionTest {
         verify(testEventSender).sendEvent(testEventArgumentCaptor.capture());
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
-        assertGeneralTestEventParameters(testEvent, "AFTER_ALL");
+        assertGeneralTestEventParameters(testEvent, TestEventType.AFTER_ALL);
 
         assertThat(testEvent.getTestName()).isNullOrEmpty();
     }
 
-    private void assertGeneralTestEventParameters(TestEvent testEvent, String after_all) {
+    private void assertGeneralTestEventParameters(TestEvent testEvent, TestEventType testEventType) {
         assertThat(testEvent.getClassName()).isEqualTo(testClass.getClass().getName());
         assertThat(testEvent.getLocalDateTime()).isBeforeOrEqualTo(LocalDateTime.now());
         assertThat(testEvent.getProjectId()).isEqualTo("kashiki");
-        assertThat(testEvent.getType()).isEqualTo(after_all);
+        assertThat(testEvent.getType()).isEqualTo(testEventType);
         assertThat(testEvent.getRunId()).isNotEmpty();
     }
 
