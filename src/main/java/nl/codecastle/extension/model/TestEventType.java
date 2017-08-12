@@ -28,5 +28,4 @@ public enum TestEventType {
      * After all the tests of a class are run.
      */
     AFTER_ALL
-
 }

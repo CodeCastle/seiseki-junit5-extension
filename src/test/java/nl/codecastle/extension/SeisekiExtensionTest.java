@@ -22,14 +22,14 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class SeisekiExtensionTest {
 
-    private SeisekiExtension rekishi;
+    private SeisekiExtension seisekiExtension;
     private SimpleTestEventSender testEventSender;
     private DummyTestClass testClass;
     private Optional<Class<?>> optionalMockClass;
 
     @BeforeEach
     public void setup(@Mock SimpleTestEventSender testEventSender) {
-        rekishi = new SeisekiExtension(testEventSender);
+        seisekiExtension = new SeisekiExtension(testEventSender);
         this.testEventSender = testEventSender;
         testClass = new DummyTestClass();
         optionalMockClass = Optional.of(testClass.getClass());
@@ -41,7 +41,7 @@ public class SeisekiExtensionTest {
         setupMethodMocks(extensionContext, testClass.getClass());
 
         ArgumentCaptor<TestEvent> testEventArgumentCaptor = ArgumentCaptor.forClass(TestEvent.class);
-        rekishi.afterEach(extensionContext);
+        seisekiExtension.afterEach(extensionContext);
         verify(testEventSender).sendEvent(testEventArgumentCaptor.capture());
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
@@ -56,7 +56,7 @@ public class SeisekiExtensionTest {
         setupMethodMocks(extensionContext, testClass.getClass());
 
         ArgumentCaptor<TestEvent> testEventArgumentCaptor = ArgumentCaptor.forClass(TestEvent.class);
-        rekishi.afterTestExecution(extensionContext);
+        seisekiExtension.afterTestExecution(extensionContext);
         verify(testEventSender).sendEvent(testEventArgumentCaptor.capture());
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
@@ -71,7 +71,7 @@ public class SeisekiExtensionTest {
         setupMethodMocks(extensionContext, testClass.getClass());
 
         ArgumentCaptor<TestEvent> testEventArgumentCaptor = ArgumentCaptor.forClass(TestEvent.class);
-        rekishi.beforeTestExecution(extensionContext);
+        seisekiExtension.beforeTestExecution(extensionContext);
         verify(testEventSender).sendEvent(testEventArgumentCaptor.capture());
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
@@ -86,7 +86,7 @@ public class SeisekiExtensionTest {
         setupMethodMocks(extensionContext, testClass.getClass());
 
         ArgumentCaptor<TestEvent> testEventArgumentCaptor = ArgumentCaptor.forClass(TestEvent.class);
-        rekishi.beforeEach(extensionContext);
+        seisekiExtension.beforeEach(extensionContext);
         verify(testEventSender).sendEvent(testEventArgumentCaptor.capture());
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
@@ -100,7 +100,7 @@ public class SeisekiExtensionTest {
         when(extensionContext.getTestClass()).thenReturn(optionalMockClass);
 
         ArgumentCaptor<TestEvent> testEventArgumentCaptor = ArgumentCaptor.forClass(TestEvent.class);
-        rekishi.beforeAll(extensionContext);
+        seisekiExtension.beforeAll(extensionContext);
         verify(testEventSender).sendEvent(testEventArgumentCaptor.capture());
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
@@ -114,7 +114,7 @@ public class SeisekiExtensionTest {
         when(extensionContext.getTestClass()).thenReturn(optionalMockClass);
 
         ArgumentCaptor<TestEvent> testEventArgumentCaptor = ArgumentCaptor.forClass(TestEvent.class);
-        rekishi.afterAll(extensionContext);
+        seisekiExtension.afterAll(extensionContext);
         verify(testEventSender).sendEvent(testEventArgumentCaptor.capture());
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
@@ -126,7 +126,7 @@ public class SeisekiExtensionTest {
     private void assertGeneralTestEventParameters(TestEvent testEvent, TestEventType testEventType) {
         assertThat(testEvent.getClassName()).isEqualTo(testClass.getClass().getName());
         assertThat(testEvent.getLocalDateTime()).isBeforeOrEqualTo(LocalDateTime.now());
-        assertThat(testEvent.getProjectId()).isEqualTo("kashiki");
+        assertThat(testEvent.getProjectId()).isEqualTo("default");
         assertThat(testEvent.getType()).isEqualTo(testEventType);
         assertThat(testEvent.getRunId()).isNotEmpty();
     }
