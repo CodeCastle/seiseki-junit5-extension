@@ -1,5 +1,6 @@
 package nl.codecastle.extension;
 
+import nl.codecastle.configuration.PropertiesReader;
 import nl.codecastle.extension.communication.http.SimpleTestEventSender;
 import nl.codecastle.extension.communication.http.TestEventSender;
 import nl.codecastle.extension.model.TestEvent;
@@ -16,14 +17,18 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
- * The Seiseki extension sends events to
+ * The Seiseki extension sends events to a server.
+ *
+ * The server endpoint is retrieved from a 'project.properties' file found in the resource folder of the test
+ * project. If that file is missing then a default properties file is found inside the Seiseki library.
+ *
  */
 public class SeisekiExtension implements BeforeAllCallback, AfterAllCallback,
         BeforeEachCallback, AfterEachCallback, BeforeTestExecutionCallback, AfterTestExecutionCallback {
 
     private static String uuid = UUID.randomUUID().toString();
     private final TestEventSender eventSender;
-
+    private final PropertiesReader propertiesReader = new PropertiesReader("project.properties");
     public SeisekiExtension() {
         this(new SimpleTestEventSender());
     }
@@ -79,7 +84,7 @@ public class SeisekiExtension implements BeforeAllCallback, AfterAllCallback,
         testingEvent.setClassName(className);
         testingEvent.setRunId(uuid);
         testingEvent.setLocalDateTime(LocalDateTime.now());
-        testingEvent.setProjectId("kashiki");
+        testingEvent.setProjectId(propertiesReader.getValue("project.name"));
         testingEvent.setClassName(className);
         testingEvent.setType(eventType);
         return testingEvent;

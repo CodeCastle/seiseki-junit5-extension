@@ -126,7 +126,7 @@ public class SeisekiExtensionTest {
     private void assertGeneralTestEventParameters(TestEvent testEvent, TestEventType testEventType) {
         assertThat(testEvent.getClassName()).isEqualTo(testClass.getClass().getName());
         assertThat(testEvent.getLocalDateTime()).isBeforeOrEqualTo(LocalDateTime.now());
-        assertThat(testEvent.getProjectId()).isEqualTo("kashiki");
+        assertThat(testEvent.getProjectId()).isEqualTo("default");
         assertThat(testEvent.getType()).isEqualTo(testEventType);
         assertThat(testEvent.getRunId()).isNotEmpty();
     }
