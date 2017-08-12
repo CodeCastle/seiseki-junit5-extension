@@ -24,9 +24,8 @@ public class PropertiesReader {
         defaultProperties = new Properties();
 
         try {
-            ClassLoader classLoader = getClass().getClassLoader();
-            InputStream defaultPropertiesStream = classLoader.getResourceAsStream("default.properties");
-            InputStream projectPropertiesStream = classLoader.getResourceAsStream(filePath);
+            InputStream defaultPropertiesStream = getClass().getClassLoader().getResourceAsStream("default.properties");
+            InputStream projectPropertiesStream = getClass().getClassLoader().getResourceAsStream(filePath);
             assert (defaultPropertiesStream != null);
             defaultProperties.load(defaultPropertiesStream);
             if (projectPropertiesStream != null) {
