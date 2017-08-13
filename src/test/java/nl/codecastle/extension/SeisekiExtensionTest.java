@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -42,7 +43,7 @@ public class SeisekiExtensionTest {
 
         ArgumentCaptor<TestEvent> testEventArgumentCaptor = ArgumentCaptor.forClass(TestEvent.class);
         seisekiExtension.afterEach(extensionContext);
-        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture());
+        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture(), eq("http://testhost:8080/api"));
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
         assertGeneralTestEventParameters(testEvent, TestEventType.AFTER_TEST_TARE_DOWN);
@@ -57,7 +58,7 @@ public class SeisekiExtensionTest {
 
         ArgumentCaptor<TestEvent> testEventArgumentCaptor = ArgumentCaptor.forClass(TestEvent.class);
         seisekiExtension.afterTestExecution(extensionContext);
-        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture());
+        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture(), eq("http://testhost:8080/api"));
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
         assertGeneralTestEventParameters(testEvent, TestEventType.AFTER_TEST_EXECUTION);
@@ -72,7 +73,7 @@ public class SeisekiExtensionTest {
 
         ArgumentCaptor<TestEvent> testEventArgumentCaptor = ArgumentCaptor.forClass(TestEvent.class);
         seisekiExtension.beforeTestExecution(extensionContext);
-        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture());
+        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture(), eq("http://testhost:8080/api"));
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
         assertGeneralTestEventParameters(testEvent, TestEventType.BEFORE_TEST_EXECUTION);
@@ -87,7 +88,7 @@ public class SeisekiExtensionTest {
 
         ArgumentCaptor<TestEvent> testEventArgumentCaptor = ArgumentCaptor.forClass(TestEvent.class);
         seisekiExtension.beforeEach(extensionContext);
-        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture());
+        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture(), eq("http://testhost:8080/api"));
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
         assertGeneralTestEventParameters(testEvent, TestEventType.BEFORE_TEST_SETUP);
@@ -101,7 +102,7 @@ public class SeisekiExtensionTest {
 
         ArgumentCaptor<TestEvent> testEventArgumentCaptor = ArgumentCaptor.forClass(TestEvent.class);
         seisekiExtension.beforeAll(extensionContext);
-        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture());
+        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture(), eq("http://testhost:8080/api"));
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
         assertGeneralTestEventParameters(testEvent, TestEventType.BEFORE_ALL);
@@ -115,7 +116,7 @@ public class SeisekiExtensionTest {
 
         ArgumentCaptor<TestEvent> testEventArgumentCaptor = ArgumentCaptor.forClass(TestEvent.class);
         seisekiExtension.afterAll(extensionContext);
-        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture());
+        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture(), eq("http://testhost:8080/api"));
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
         assertGeneralTestEventParameters(testEvent, TestEventType.AFTER_ALL);
@@ -126,7 +127,7 @@ public class SeisekiExtensionTest {
     private void assertGeneralTestEventParameters(TestEvent testEvent, TestEventType testEventType) {
         assertThat(testEvent.getClassName()).isEqualTo(testClass.getClass().getName());
         assertThat(testEvent.getLocalDateTime()).isBeforeOrEqualTo(LocalDateTime.now());
-        assertThat(testEvent.getProjectId()).isEqualTo("default");
+        assertThat(testEvent.getProjectId()).isEqualTo("test");
         assertThat(testEvent.getType()).isEqualTo(testEventType);
         assertThat(testEvent.getRunId()).isNotEmpty();
     }
