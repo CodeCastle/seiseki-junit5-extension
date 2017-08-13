@@ -2,7 +2,7 @@ package nl.codecastle.extension.communication.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import name.falgout.jeffrey.testing.junit5.MockitoExtension;
-import nl.codecastle.OAuth2TokenResponse;
+import nl.codecastle.configuration.security.OAuth2TokenResponse;
 import nl.codecastle.configuration.security.TokenProvider;
 import nl.codecastle.extension.model.TestEvent;
 import nl.codecastle.extension.model.TestEventType;

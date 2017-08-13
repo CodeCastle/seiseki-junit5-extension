@@ -1,7 +1,7 @@
 package nl.codecastle.extension;
 
 import nl.codecastle.configuration.PropertiesReader;
-import nl.codecastle.configuration.security.DummyTokeProvider;
+import nl.codecastle.configuration.security.DummyTokenProvider;
 import nl.codecastle.extension.communication.http.MultiThreadedHttpClientProvider;
 import nl.codecastle.extension.communication.http.SimpleTestEventSender;
 import nl.codecastle.extension.communication.http.TestEventSender;
@@ -35,7 +35,7 @@ public class SeisekiExtension implements BeforeAllCallback, AfterAllCallback,
     private final PropertiesReader propertiesReader = new PropertiesReader("seiseki.properties");
 
     public SeisekiExtension() {
-        this(new SimpleTestEventSender(new MultiThreadedHttpClientProvider(), new DummyTokeProvider()));
+        this(new SimpleTestEventSender(new MultiThreadedHttpClientProvider(), new DummyTokenProvider()));
     }
 
     SeisekiExtension(TestEventSender testEventSender) {
