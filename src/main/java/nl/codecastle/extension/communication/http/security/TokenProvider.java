@@ -1,4 +1,4 @@
-package nl.codecastle.configuration.security;
+package nl.codecastle.extension.communication.http.security;
 
 import org.apache.http.auth.AuthenticationException;
 

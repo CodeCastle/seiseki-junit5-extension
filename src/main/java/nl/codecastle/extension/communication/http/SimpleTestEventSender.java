@@ -1,8 +1,8 @@
 package nl.codecastle.extension.communication.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nl.codecastle.configuration.security.OAuth2TokenResponse;
-import nl.codecastle.configuration.security.TokenProvider;
+import nl.codecastle.extension.communication.http.security.OAuth2TokenResponse;
+import nl.codecastle.extension.communication.http.security.TokenProvider;
 import nl.codecastle.extension.model.TestEvent;
 import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.HttpClient;
