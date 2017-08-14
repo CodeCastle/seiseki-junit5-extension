@@ -39,8 +39,8 @@ public class PropertiesReaderTest {
     @Test
     public void shouldReadValuesFromProjectPropertiesWhenPresent() {
         propertiesReader = new PropertiesReader("seiseki.properties");
-        assertThat(propertiesReader.getValue(PROJECT_NAME_KEY)).isEqualTo("keshiki");
-        assertThat(propertiesReader.getValue(SERVER_ENDPOINT_KEY)).isEqualTo("http://localhost:8080/api");
+        assertThat(propertiesReader.getValue(PROJECT_NAME_KEY)).isEqualTo("test");
+        assertThat(propertiesReader.getValue(SERVER_ENDPOINT_KEY)).isEqualTo("http://testhost:8080/api");
     }
 
 }
