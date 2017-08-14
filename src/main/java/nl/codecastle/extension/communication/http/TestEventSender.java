@@ -1,6 +1,9 @@
 package nl.codecastle.extension.communication.http;
 
 import nl.codecastle.extension.model.TestEvent;
+import org.apache.http.auth.AuthenticationException;
+
+import java.io.IOException;
 
 /**
  * Used to send {@link TestEvent} messages to a server. The server is provided by a {@link HttpClientProvider} object.
@@ -14,12 +17,5 @@ public interface TestEventSender {
      *
      * @param testingEvent the test event to send
      */
-    void sendEvent(TestEvent testingEvent);
-
-    /**
-     * Sets the {@link HttpClientProvider} that will be used to create an {@link org.apache.http.client.HttpClient}.
-     *
-     * @param httpClientProvider the provider of the http client
-     */
-    void setHttpClientProvider(HttpClientProvider httpClientProvider);
+    void sendEvent(TestEvent testingEvent, String url) throws IOException, AuthenticationException;
 }

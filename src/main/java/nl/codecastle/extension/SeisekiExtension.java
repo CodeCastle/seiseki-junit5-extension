@@ -1,10 +1,13 @@
 package nl.codecastle.extension;
 
 import nl.codecastle.configuration.PropertiesReader;
+import nl.codecastle.configuration.security.DummyTokenProvider;
+import nl.codecastle.extension.communication.http.MultiThreadedHttpClientProvider;
 import nl.codecastle.extension.communication.http.SimpleTestEventSender;
 import nl.codecastle.extension.communication.http.TestEventSender;
 import nl.codecastle.extension.model.TestEvent;
 import nl.codecastle.extension.model.TestEventType;
+import org.apache.http.auth.AuthenticationException;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
@@ -13,6 +16,7 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -28,13 +32,15 @@ public class SeisekiExtension implements BeforeAllCallback, AfterAllCallback,
 
     private static String uuid = UUID.randomUUID().toString();
     private final TestEventSender eventSender;
-    private final PropertiesReader propertiesReader = new PropertiesReader("project.properties");
+    private final PropertiesReader propertiesReader;
+
     public SeisekiExtension() {
-        this(new SimpleTestEventSender());
+        this(new SimpleTestEventSender(new MultiThreadedHttpClientProvider(), new DummyTokenProvider()), new PropertiesReader("seiseki.properties"));
     }
 
-    SeisekiExtension(TestEventSender testEventSender) {
+    SeisekiExtension(TestEventSender testEventSender, PropertiesReader propertiesReader) {
         this.eventSender = testEventSender;
+        this.propertiesReader = propertiesReader;
     }
 
     @Override
@@ -57,9 +63,11 @@ public class SeisekiExtension implements BeforeAllCallback, AfterAllCallback,
         sendTestEvent(extensionContext, TestEventType.BEFORE_ALL);
     }
 
-    private void sendTestEvent(ExtensionContext extensionContext, TestEventType eventType) {
+    private void sendTestEvent(ExtensionContext extensionContext, TestEventType eventType)
+            throws IOException, AuthenticationException {
+
         String className = extensionContext.getTestClass().get().getName();
-        eventSender.sendEvent(getTestEvent(className, uuid, eventType));
+        eventSender.sendEvent(getTestEvent(className, uuid, eventType), propertiesReader.getValue("server.endpoint"));
     }
 
     @Override
@@ -72,11 +80,13 @@ public class SeisekiExtension implements BeforeAllCallback, AfterAllCallback,
         sendTestMethodEvent(extensionContext, TestEventType.BEFORE_TEST_EXECUTION);
     }
 
-    private void sendTestMethodEvent(ExtensionContext extensionContext, TestEventType eventType) {
+    private void sendTestMethodEvent(ExtensionContext extensionContext, TestEventType eventType)
+            throws IOException, AuthenticationException {
+
         String className = extensionContext.getTestClass().get().getName();
         String testName = extensionContext.getTestMethod().get().getName();
 
-        eventSender.sendEvent(getTestEvent(className, uuid, eventType, testName));
+        eventSender.sendEvent(getTestEvent(className, uuid, eventType, testName), propertiesReader.getValue("server.endpoint"));
     }
 
     private TestEvent getTestEvent(String className, String uuid, TestEventType eventType) {
