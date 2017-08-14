@@ -1,6 +1,7 @@
 package nl.codecastle.extension;
 
 import name.falgout.jeffrey.testing.junit5.MockitoExtension;
+import nl.codecastle.configuration.PropertiesReader;
 import nl.codecastle.extension.communication.http.SimpleTestEventSender;
 import nl.codecastle.extension.model.TestEvent;
 import nl.codecastle.extension.model.TestEventType;
@@ -23,14 +24,19 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class SeisekiExtensionTest {
 
+    private static final String HTTP_TEST_HOST_8080_API = "http://testhost:8080/api";
+    private static final String TEST_METHOD_NAME = "testMethodOne";
+    private static final String TEST_PROJECT_NAME = "test";
     private SeisekiExtension seisekiExtension;
     private SimpleTestEventSender testEventSender;
     private DummyTestClass testClass;
     private Optional<Class<?>> optionalMockClass;
 
     @BeforeEach
-    public void setup(@Mock SimpleTestEventSender testEventSender) {
-        seisekiExtension = new SeisekiExtension(testEventSender);
+    public void setup(@Mock SimpleTestEventSender testEventSender, @Mock PropertiesReader propertiesReader) {
+        seisekiExtension = new SeisekiExtension(testEventSender, propertiesReader);
+        when(propertiesReader.getValue("server.endpoint")).thenReturn(HTTP_TEST_HOST_8080_API);
+        when(propertiesReader.getValue("project.name")).thenReturn(TEST_PROJECT_NAME);
         this.testEventSender = testEventSender;
         testClass = new DummyTestClass();
         optionalMockClass = Optional.of(testClass.getClass());
@@ -43,12 +49,12 @@ public class SeisekiExtensionTest {
 
         ArgumentCaptor<TestEvent> testEventArgumentCaptor = ArgumentCaptor.forClass(TestEvent.class);
         seisekiExtension.afterEach(extensionContext);
-        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture(), eq("http://testhost:8080/api"));
+        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture(), eq(HTTP_TEST_HOST_8080_API));
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
         assertGeneralTestEventParameters(testEvent, TestEventType.AFTER_TEST_TARE_DOWN);
 
-        assertThat(testEvent.getTestName()).isEqualTo("testMethodOne");
+        assertThat(testEvent.getTestName()).isEqualTo(TEST_METHOD_NAME);
     }
 
     @Test
@@ -58,12 +64,12 @@ public class SeisekiExtensionTest {
 
         ArgumentCaptor<TestEvent> testEventArgumentCaptor = ArgumentCaptor.forClass(TestEvent.class);
         seisekiExtension.afterTestExecution(extensionContext);
-        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture(), eq("http://testhost:8080/api"));
+        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture(), eq(HTTP_TEST_HOST_8080_API));
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
         assertGeneralTestEventParameters(testEvent, TestEventType.AFTER_TEST_EXECUTION);
 
-        assertThat(testEvent.getTestName()).isEqualTo("testMethodOne");
+        assertThat(testEvent.getTestName()).isEqualTo(TEST_METHOD_NAME);
     }
 
     @Test
@@ -73,12 +79,12 @@ public class SeisekiExtensionTest {
 
         ArgumentCaptor<TestEvent> testEventArgumentCaptor = ArgumentCaptor.forClass(TestEvent.class);
         seisekiExtension.beforeTestExecution(extensionContext);
-        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture(), eq("http://testhost:8080/api"));
+        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture(), eq(HTTP_TEST_HOST_8080_API));
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
         assertGeneralTestEventParameters(testEvent, TestEventType.BEFORE_TEST_EXECUTION);
 
-        assertThat(testEvent.getTestName()).isEqualTo("testMethodOne");
+        assertThat(testEvent.getTestName()).isEqualTo(TEST_METHOD_NAME);
     }
 
     @Test
@@ -88,12 +94,12 @@ public class SeisekiExtensionTest {
 
         ArgumentCaptor<TestEvent> testEventArgumentCaptor = ArgumentCaptor.forClass(TestEvent.class);
         seisekiExtension.beforeEach(extensionContext);
-        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture(), eq("http://testhost:8080/api"));
+        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture(), eq(HTTP_TEST_HOST_8080_API));
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
         assertGeneralTestEventParameters(testEvent, TestEventType.BEFORE_TEST_SETUP);
 
-        assertThat(testEvent.getTestName()).isEqualTo("testMethodOne");
+        assertThat(testEvent.getTestName()).isEqualTo(TEST_METHOD_NAME);
     }
 
     @Test
@@ -102,7 +108,7 @@ public class SeisekiExtensionTest {
 
         ArgumentCaptor<TestEvent> testEventArgumentCaptor = ArgumentCaptor.forClass(TestEvent.class);
         seisekiExtension.beforeAll(extensionContext);
-        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture(), eq("http://testhost:8080/api"));
+        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture(), eq(HTTP_TEST_HOST_8080_API));
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
         assertGeneralTestEventParameters(testEvent, TestEventType.BEFORE_ALL);
@@ -116,7 +122,7 @@ public class SeisekiExtensionTest {
 
         ArgumentCaptor<TestEvent> testEventArgumentCaptor = ArgumentCaptor.forClass(TestEvent.class);
         seisekiExtension.afterAll(extensionContext);
-        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture(), eq("http://testhost:8080/api"));
+        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture(), eq(HTTP_TEST_HOST_8080_API));
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
         assertGeneralTestEventParameters(testEvent, TestEventType.AFTER_ALL);
@@ -127,13 +133,13 @@ public class SeisekiExtensionTest {
     private void assertGeneralTestEventParameters(TestEvent testEvent, TestEventType testEventType) {
         assertThat(testEvent.getClassName()).isEqualTo(testClass.getClass().getName());
         assertThat(testEvent.getLocalDateTime()).isBeforeOrEqualTo(LocalDateTime.now());
-        assertThat(testEvent.getProjectId()).isEqualTo("test");
+        assertThat(testEvent.getProjectId()).isEqualTo(TEST_PROJECT_NAME);
         assertThat(testEvent.getType()).isEqualTo(testEventType);
         assertThat(testEvent.getRunId()).isNotEmpty();
     }
 
     private void setupMethodMocks(@Mock ExtensionContext extensionContext, Class<?> testClassStub) throws NoSuchMethodException {
-        Method testMethodOne = testClassStub.getMethod("testMethodOne");
+        Method testMethodOne = testClassStub.getMethod(TEST_METHOD_NAME);
         Method testMethodTwo = testClassStub.getMethod("testMethodTwo");
         when(extensionContext.getTestMethod()).thenReturn(Optional.of(testMethodOne), Optional.of(testMethodTwo));
     }

@@ -32,14 +32,15 @@ public class SeisekiExtension implements BeforeAllCallback, AfterAllCallback,
 
     private static String uuid = UUID.randomUUID().toString();
     private final TestEventSender eventSender;
-    private final PropertiesReader propertiesReader = new PropertiesReader("seiseki.properties");
+    private final PropertiesReader propertiesReader;
 
     public SeisekiExtension() {
-        this(new SimpleTestEventSender(new MultiThreadedHttpClientProvider(), new DummyTokenProvider()));
+        this(new SimpleTestEventSender(new MultiThreadedHttpClientProvider(), new DummyTokenProvider()), new PropertiesReader("seiseki.properties"));
     }
 
-    SeisekiExtension(TestEventSender testEventSender) {
+    SeisekiExtension(TestEventSender testEventSender, PropertiesReader propertiesReader) {
         this.eventSender = testEventSender;
+        this.propertiesReader = propertiesReader;
     }
 
     @Override
@@ -66,7 +67,7 @@ public class SeisekiExtension implements BeforeAllCallback, AfterAllCallback,
             throws IOException, AuthenticationException {
 
         String className = extensionContext.getTestClass().get().getName();
-        eventSender.sendEvent(getTestEvent(className, uuid, eventType), propertiesReader.getValue("server.url"));
+        eventSender.sendEvent(getTestEvent(className, uuid, eventType), propertiesReader.getValue("server.endpoint"));
     }
 
     @Override
@@ -85,7 +86,7 @@ public class SeisekiExtension implements BeforeAllCallback, AfterAllCallback,
         String className = extensionContext.getTestClass().get().getName();
         String testName = extensionContext.getTestMethod().get().getName();
 
-        eventSender.sendEvent(getTestEvent(className, uuid, eventType, testName), propertiesReader.getValue("server.url"));
+        eventSender.sendEvent(getTestEvent(className, uuid, eventType, testName), propertiesReader.getValue("server.endpoint"));
     }
 
     private TestEvent getTestEvent(String className, String uuid, TestEventType eventType) {
