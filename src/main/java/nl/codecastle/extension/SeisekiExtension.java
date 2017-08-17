@@ -1,10 +1,10 @@
 package nl.codecastle.extension;
 
 import nl.codecastle.configuration.PropertiesReader;
-import nl.codecastle.configuration.security.DummyTokenProvider;
 import nl.codecastle.extension.communication.http.MultiThreadedHttpClientProvider;
 import nl.codecastle.extension.communication.http.SimpleTestEventSender;
 import nl.codecastle.extension.communication.http.TestEventSender;
+import nl.codecastle.extension.communication.http.security.OAuth2TokenProvider;
 import nl.codecastle.extension.model.TestEvent;
 import nl.codecastle.extension.model.TestEventType;
 import org.apache.http.auth.AuthenticationException;
@@ -35,7 +35,7 @@ public class SeisekiExtension implements BeforeAllCallback, AfterAllCallback,
     private final PropertiesReader propertiesReader;
 
     public SeisekiExtension() {
-        this(new SimpleTestEventSender(new MultiThreadedHttpClientProvider(), new DummyTokenProvider()), new PropertiesReader("seiseki.properties"));
+        this(new SimpleTestEventSender(new MultiThreadedHttpClientProvider(), new OAuth2TokenProvider()), new PropertiesReader("seiseki.properties"));
     }
 
     SeisekiExtension(TestEventSender testEventSender, PropertiesReader propertiesReader) {
