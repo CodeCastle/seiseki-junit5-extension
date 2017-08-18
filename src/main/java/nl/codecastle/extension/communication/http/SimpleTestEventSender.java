@@ -1,8 +1,8 @@
 package nl.codecastle.extension.communication.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nl.codecastle.extension.communication.http.security.OAuth2TokenResponse;
 import nl.codecastle.extension.communication.http.security.TokenProvider;
+import nl.codecastle.extension.communication.http.security.models.OAuth2TokenResponse;
 import nl.codecastle.extension.model.TestEvent;
 import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.HttpClient;
@@ -12,7 +12,8 @@ import org.apache.http.entity.StringEntity;
 import java.io.IOException;
 
 /**
- *
+ * A simple implementation that uses an {@link HttpClientProvider} to retrieve an http client
+ * and send all the test events.
  */
 public class SimpleTestEventSender implements TestEventSender {
     private static ObjectMapper objectMapper = new ObjectMapper();

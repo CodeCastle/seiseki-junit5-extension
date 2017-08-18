@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import name.falgout.jeffrey.testing.junit5.MockitoExtension;
 import nl.codecastle.configuration.PropertiesReader;
 import nl.codecastle.extension.communication.http.HttpClientProvider;
+import nl.codecastle.extension.communication.http.security.models.OAuth2TokenResponse;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;

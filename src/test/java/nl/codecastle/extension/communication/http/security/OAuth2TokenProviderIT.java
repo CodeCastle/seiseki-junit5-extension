@@ -1,5 +1,7 @@
 package nl.codecastle.extension.communication.http.security;
 
+import nl.codecastle.extension.communication.http.security.models.AuthorizationError;
+import nl.codecastle.extension.communication.http.security.models.OAuth2TokenResponse;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

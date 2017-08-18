@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.codecastle.configuration.PropertiesReader;
 import nl.codecastle.extension.communication.http.HttpClientProvider;
 import nl.codecastle.extension.communication.http.MultiThreadedHttpClientProvider;
+import nl.codecastle.extension.communication.http.security.models.AuthorizationError;
+import nl.codecastle.extension.communication.http.security.models.OAuth2TokenResponse;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -19,6 +21,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Retrieves a security token that will be used in each subsequent request.
+ * All necessary data for the request are in the seiseki.properties file.
+ */
 public class OAuth2TokenProvider implements TokenProvider {
 
     private static OAuth2TokenResponse oAuth2TokenResponse;
