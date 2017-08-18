@@ -1,7 +1,5 @@
 package nl.codecastle.configuration;
 
-import nl.codecastle.exceptions.SeisekiException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
@@ -12,13 +10,6 @@ public class PropertiesReaderTest {
     private static final String PROJECT_NAME_KEY = "project.name";
     private static final String SERVER_ENDPOINT_KEY = "server.endpoint";
     private PropertiesReader propertiesReader;
-    private ClassLoader classLoader = getClass().getClassLoader();
-
-    @BeforeEach
-    public void testSetup() throws SeisekiException {
-
-    }
-
 
     @Test
     public void shouldReadDefaultValuesIfProjectValuesAreMissing() {
