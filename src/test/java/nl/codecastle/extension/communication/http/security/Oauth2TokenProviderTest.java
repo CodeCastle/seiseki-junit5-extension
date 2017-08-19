@@ -42,7 +42,7 @@ public class Oauth2TokenProviderTest {
     }
 
     private void setUpMockProperties(@Mock PropertiesReader propertiesReader) {
-        when(propertiesReader.getValue("server.token.endpoint")).thenReturn("http://localhost:8080/uaa/oauth/token");
+        when(propertiesReader.getValue("server.token.endpoint")).thenReturn("http://localhost:8383/uaa/oauth/token");
         when(propertiesReader.getValue("username")).thenReturn("userOne");
         when(propertiesReader.getValue("password")).thenReturn("programirame");
         when(propertiesReader.getValue("client.grant_type")).thenReturn("password");

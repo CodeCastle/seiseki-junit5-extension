@@ -4,10 +4,10 @@ import nl.codecastle.configuration.PropertiesReader;
 import nl.codecastle.extension.communication.http.MultiThreadedHttpClientProvider;
 import nl.codecastle.extension.communication.http.SimpleTestEventSender;
 import nl.codecastle.extension.communication.http.TestEventSender;
+import nl.codecastle.extension.communication.http.UnauthorizedException;
 import nl.codecastle.extension.communication.http.security.OAuth2TokenProvider;
 import nl.codecastle.extension.model.TestEvent;
 import nl.codecastle.extension.model.TestEventType;
-import org.apache.http.auth.AuthenticationException;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
@@ -35,7 +35,7 @@ public class SeisekiExtension implements BeforeAllCallback, AfterAllCallback,
     private final PropertiesReader propertiesReader;
 
     public SeisekiExtension() {
-        this(new SimpleTestEventSender(new MultiThreadedHttpClientProvider(), new OAuth2TokenProvider()), new PropertiesReader("seiseki.properties"));
+        this(new SimpleTestEventSender(new MultiThreadedHttpClientProvider(), new OAuth2TokenProvider(), new PropertiesReader("seiseki.properties")), new PropertiesReader("seiseki.properties"));
     }
 
     SeisekiExtension(TestEventSender testEventSender, PropertiesReader propertiesReader) {
@@ -64,10 +64,10 @@ public class SeisekiExtension implements BeforeAllCallback, AfterAllCallback,
     }
 
     private void sendTestEvent(ExtensionContext extensionContext, TestEventType eventType)
-            throws IOException, AuthenticationException {
+            throws IOException, UnauthorizedException {
 
         String className = extensionContext.getTestClass().get().getName();
-        eventSender.sendEvent(getTestEvent(className, uuid, eventType), propertiesReader.getValue("server.endpoint"));
+        eventSender.sendEvent(getTestEvent(className, uuid, eventType));
     }
 
     @Override
@@ -81,12 +81,12 @@ public class SeisekiExtension implements BeforeAllCallback, AfterAllCallback,
     }
 
     private void sendTestMethodEvent(ExtensionContext extensionContext, TestEventType eventType)
-            throws IOException, AuthenticationException {
+            throws IOException, UnauthorizedException {
 
         String className = extensionContext.getTestClass().get().getName();
         String testName = extensionContext.getTestMethod().get().getName();
 
-        eventSender.sendEvent(getTestEvent(className, uuid, eventType, testName), propertiesReader.getValue("server.endpoint"));
+        eventSender.sendEvent(getTestEvent(className, uuid, eventType, testName));
     }
 
     private TestEvent getTestEvent(String className, String uuid, TestEventType eventType) {

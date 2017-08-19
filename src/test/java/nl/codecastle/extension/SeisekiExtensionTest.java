@@ -17,14 +17,13 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class SeisekiExtensionTest {
 
-    private static final String HTTP_TEST_HOST_8080_API = "http://testhost:8080/api";
+    private static final String HTTP_TEST_HOST_8080_API = "http://testhost:8383/api";
     private static final String TEST_METHOD_NAME = "testMethodOne";
     private static final String TEST_PROJECT_NAME = "test";
     private SeisekiExtension seisekiExtension;
@@ -49,7 +48,7 @@ public class SeisekiExtensionTest {
 
         ArgumentCaptor<TestEvent> testEventArgumentCaptor = ArgumentCaptor.forClass(TestEvent.class);
         seisekiExtension.afterEach(extensionContext);
-        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture(), eq(HTTP_TEST_HOST_8080_API));
+        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture());
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
         assertGeneralTestEventParameters(testEvent, TestEventType.AFTER_TEST_TARE_DOWN);
@@ -64,7 +63,7 @@ public class SeisekiExtensionTest {
 
         ArgumentCaptor<TestEvent> testEventArgumentCaptor = ArgumentCaptor.forClass(TestEvent.class);
         seisekiExtension.afterTestExecution(extensionContext);
-        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture(), eq(HTTP_TEST_HOST_8080_API));
+        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture());
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
         assertGeneralTestEventParameters(testEvent, TestEventType.AFTER_TEST_EXECUTION);
@@ -79,7 +78,7 @@ public class SeisekiExtensionTest {
 
         ArgumentCaptor<TestEvent> testEventArgumentCaptor = ArgumentCaptor.forClass(TestEvent.class);
         seisekiExtension.beforeTestExecution(extensionContext);
-        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture(), eq(HTTP_TEST_HOST_8080_API));
+        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture());
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
         assertGeneralTestEventParameters(testEvent, TestEventType.BEFORE_TEST_EXECUTION);
@@ -94,7 +93,7 @@ public class SeisekiExtensionTest {
 
         ArgumentCaptor<TestEvent> testEventArgumentCaptor = ArgumentCaptor.forClass(TestEvent.class);
         seisekiExtension.beforeEach(extensionContext);
-        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture(), eq(HTTP_TEST_HOST_8080_API));
+        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture());
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
         assertGeneralTestEventParameters(testEvent, TestEventType.BEFORE_TEST_SETUP);
@@ -108,7 +107,7 @@ public class SeisekiExtensionTest {
 
         ArgumentCaptor<TestEvent> testEventArgumentCaptor = ArgumentCaptor.forClass(TestEvent.class);
         seisekiExtension.beforeAll(extensionContext);
-        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture(), eq(HTTP_TEST_HOST_8080_API));
+        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture());
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
         assertGeneralTestEventParameters(testEvent, TestEventType.BEFORE_ALL);
@@ -122,7 +121,7 @@ public class SeisekiExtensionTest {
 
         ArgumentCaptor<TestEvent> testEventArgumentCaptor = ArgumentCaptor.forClass(TestEvent.class);
         seisekiExtension.afterAll(extensionContext);
-        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture(), eq(HTTP_TEST_HOST_8080_API));
+        verify(testEventSender).sendEvent(testEventArgumentCaptor.capture());
 
         TestEvent testEvent = testEventArgumentCaptor.getValue();
         assertGeneralTestEventParameters(testEvent, TestEventType.AFTER_ALL);

@@ -42,27 +42,46 @@ public class OAuth2TokenProvider implements TokenProvider {
     }
 
     @Override
-    public OAuth2TokenResponse getToken() throws IOException, AuthenticationException {
+    public OAuth2TokenResponse getToken() throws IOException {
         if (oAuth2TokenResponse == null) {
             oAuth2TokenResponse = getTokenFromServer();
         }
         return oAuth2TokenResponse;
     }
 
-    private OAuth2TokenResponse getTokenFromServer() throws AuthenticationException, IOException {
+    private OAuth2TokenResponse getTokenFromServer() throws IOException {
         HttpPost httpPost = new HttpPost(propertiesReader.getValue("server.token.endpoint"));
-
         UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(
                 propertiesReader.getValue("client.id"), propertiesReader.getValue("client.secret"));
+        OAuth2TokenResponse tokenResponse;
+        try {
+            tokenResponse = getTokenResponse(httpPost, credentials);
+        } catch (AuthenticationException e) {
+            tokenResponse = getEmptyResponseWithErrorObject(e);
+        }
+
+        return tokenResponse;
+    }
+
+    private OAuth2TokenResponse getTokenResponse(HttpPost httpPost, UsernamePasswordCredentials credentials) throws AuthenticationException, IOException {
+        OAuth2TokenResponse tokenResponse;
         httpPost.addHeader("Accept", "application/json");
         httpPost.addHeader(new BasicScheme().authenticate(credentials, httpPost, null));
 
         httpPost.setEntity(new UrlEncodedFormEntity(getBodyValues()));
-
         HttpResponse response = clientProvider.getHttpClient().execute(httpPost);
         HttpEntity entity = response.getEntity();
+        tokenResponse = getTokenResponse(response, entity);
+        return tokenResponse;
+    }
 
-        return getTokenResponse(response, entity);
+    private OAuth2TokenResponse getEmptyResponseWithErrorObject(AuthenticationException e) {
+        OAuth2TokenResponse tokenResponse;
+        tokenResponse = new OAuth2TokenResponse();
+        AuthorizationError error = new AuthorizationError();
+        error.setError("AuthenticationException");
+        error.setErrorDescription(e.getMessage());
+        return tokenResponse;
     }
 
     private OAuth2TokenResponse getTokenResponse(HttpResponse response, HttpEntity entity) throws IOException {

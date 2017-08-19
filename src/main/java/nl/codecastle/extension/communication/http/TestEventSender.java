@@ -1,7 +1,6 @@
 package nl.codecastle.extension.communication.http;
 
 import nl.codecastle.extension.model.TestEvent;
-import org.apache.http.auth.AuthenticationException;
 
 import java.io.IOException;
 
@@ -17,5 +16,5 @@ public interface TestEventSender {
      *
      * @param testingEvent the test event to send
      */
-    void sendEvent(TestEvent testingEvent, String url) throws IOException, AuthenticationException;
+    void sendEvent(TestEvent testingEvent) throws IOException, UnauthorizedException;
 }
