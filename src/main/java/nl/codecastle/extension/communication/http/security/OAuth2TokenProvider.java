@@ -12,8 +12,10 @@ import org.apache.http.NameValuePair;
 import org.apache.http.auth.AuthenticationException;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
@@ -69,9 +71,19 @@ public class OAuth2TokenProvider implements TokenProvider {
         httpPost.addHeader(new BasicScheme().authenticate(credentials, httpPost, null));
 
         httpPost.setEntity(new UrlEncodedFormEntity(getBodyValues()));
-        HttpResponse response = clientProvider.getHttpClient().execute(httpPost);
-        HttpEntity entity = response.getEntity();
-        tokenResponse = getTokenResponse(response, entity);
+        CloseableHttpResponse response = null;
+        try {
+            CloseableHttpClient httpClient = clientProvider.getHttpClient();
+            response = httpClient.execute(httpPost);
+            HttpEntity entity = response.getEntity();
+            tokenResponse = getTokenResponse(response, entity);
+        } finally {
+            if (response != null) {
+                response.close();
+            }
+        }
+
+
         return tokenResponse;
     }
 

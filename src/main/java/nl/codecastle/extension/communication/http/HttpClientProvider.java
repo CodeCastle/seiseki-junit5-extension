@@ -1,6 +1,7 @@
 package nl.codecastle.extension.communication.http;
 
 import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
 
 /**
  * Provides an implementation of an Apache {@link HttpClient}.
@@ -11,5 +12,5 @@ public interface HttpClientProvider {
      *
      * @return the http client
      */
-    HttpClient getHttpClient();
+    CloseableHttpClient getHttpClient();
 }

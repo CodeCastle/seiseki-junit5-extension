@@ -13,6 +13,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.assertj.core.api.iterable.Extractor;
 import org.junit.jupiter.api.BeforeAll;
@@ -58,7 +59,7 @@ class SimpleTestEventSenderTest {
     }
 
     @BeforeEach
-    public void setup(@Mock HttpClient httpClient, @Mock HttpClientProvider provider, @Mock TokenProvider tokenProvider,
+    public void setup(@Mock CloseableHttpClient httpClient, @Mock HttpClientProvider provider, @Mock TokenProvider tokenProvider,
                       @Mock PropertiesReader propertiesReader)
             throws IOException, AuthenticationException {
         tokenProviderMock = tokenProvider;

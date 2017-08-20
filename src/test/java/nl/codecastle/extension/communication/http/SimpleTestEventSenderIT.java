@@ -6,7 +6,6 @@ import nl.codecastle.extension.model.TestEvent;
 import nl.codecastle.extension.model.TestEventType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.Header;
@@ -19,7 +18,6 @@ import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 import static org.mockserver.model.StringBody.exact;
 
-@Disabled
 class SimpleTestEventSenderIT {
     private static final String BODY = "{\"localDateTime\":null,\"projectId\":\"testz\",\"runId\":\"1234\",\"testName\":\"onlyTest\",\"className\":\"SomeTestClass\",\"status\":null,\"type\":\"BEFORE_TEST_EXECUTION\"}";
     private static ClientAndServer mockServer;
@@ -28,10 +26,9 @@ class SimpleTestEventSenderIT {
     @BeforeEach
     void setUp() {
         mockServer = startClientAndServer(8383);
-        mockServer.reset();
+        setupHappyFlowMockServer();
         simpleTestEventSender = new SimpleTestEventSender(new MultiThreadedHttpClientProvider(),
                 new OAuth2TokenProvider(), new PropertiesReader("seiseki.properties"));
-
     }
 
     @AfterEach
@@ -76,9 +73,7 @@ class SimpleTestEventSenderIT {
 
     @Test
     public void shouldSendRequestWhenAuthorized() throws Exception {
-        setupHappyFlowMockServer();
         TestEvent testEvent = getTestEvent();
-        System.out.println("===> Running: " + mockServer.isRunning(50, 60000, TimeUnit.DAYS.MILLISECONDS));
 
         simpleTestEventSender.sendEvent(testEvent);
 
@@ -99,7 +94,6 @@ class SimpleTestEventSenderIT {
     @Test
     public void shouldGoAfterTokenOnlyOnce() throws Exception {
         TestEvent testEvent = getTestEvent();
-        setupHappyFlowMockServer();
         System.out.println("===> Running: " + mockServer.isRunning(50, 60000, TimeUnit.DAYS.MILLISECONDS));
         simpleTestEventSender.sendEvent(testEvent);
         simpleTestEventSender.sendEvent(testEvent);

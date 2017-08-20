@@ -7,11 +7,11 @@ import nl.codecastle.configuration.PropertiesReader;
 import nl.codecastle.extension.communication.http.HttpClientProvider;
 import nl.codecastle.extension.communication.http.security.models.OAuth2TokenResponse;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.auth.AuthenticationException;
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,9 +52,8 @@ public class Oauth2TokenProviderTest {
     }
 
     @Test
-    public void shouldGetToken() throws IOException, AuthenticationException {
-        HttpClient httpClient = mock(HttpClient.class);
-        HttpResponse response = mock(HttpResponse.class);
+    public void shouldGetToken(@Mock CloseableHttpClient httpClient, @Mock CloseableHttpResponse response)
+            throws IOException, AuthenticationException {
 
         when(clientProviderMock.getHttpClient()).thenReturn(httpClient);
 

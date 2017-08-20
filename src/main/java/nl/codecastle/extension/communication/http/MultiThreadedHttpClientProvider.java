@@ -2,6 +2,7 @@ package nl.codecastle.extension.communication.http;
 
 import nl.codecastle.configuration.PropertiesReader;
 import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
@@ -10,7 +11,7 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
  * The number of total connections and connections per route are read from a property file.
  */
 public class MultiThreadedHttpClientProvider implements HttpClientProvider {
-    private static HttpClient httpClient;
+    private static CloseableHttpClient httpClient;
 
     static {
         PropertiesReader reader = new PropertiesReader("seiseki.properties");
@@ -24,7 +25,7 @@ public class MultiThreadedHttpClientProvider implements HttpClientProvider {
     }
 
     @Override
-    public HttpClient getHttpClient() {
+    public CloseableHttpClient getHttpClient() {
         return httpClient;
     }
 }
