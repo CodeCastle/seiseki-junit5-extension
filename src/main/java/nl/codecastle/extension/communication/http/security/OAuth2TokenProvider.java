@@ -12,8 +12,10 @@ import org.apache.http.NameValuePair;
 import org.apache.http.auth.AuthenticationException;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
@@ -42,27 +44,56 @@ public class OAuth2TokenProvider implements TokenProvider {
     }
 
     @Override
-    public OAuth2TokenResponse getToken() throws IOException, AuthenticationException {
+    public OAuth2TokenResponse getToken() throws IOException {
         if (oAuth2TokenResponse == null) {
             oAuth2TokenResponse = getTokenFromServer();
         }
         return oAuth2TokenResponse;
     }
 
-    private OAuth2TokenResponse getTokenFromServer() throws AuthenticationException, IOException {
+    private OAuth2TokenResponse getTokenFromServer() throws IOException {
         HttpPost httpPost = new HttpPost(propertiesReader.getValue("server.token.endpoint"));
-
         UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(
                 propertiesReader.getValue("client.id"), propertiesReader.getValue("client.secret"));
+        OAuth2TokenResponse tokenResponse;
+        try {
+            tokenResponse = getTokenResponse(httpPost, credentials);
+        } catch (AuthenticationException e) {
+            tokenResponse = getEmptyResponseWithErrorObject(e);
+        }
+
+        return tokenResponse;
+    }
+
+    private OAuth2TokenResponse getTokenResponse(HttpPost httpPost, UsernamePasswordCredentials credentials) throws AuthenticationException, IOException {
+        OAuth2TokenResponse tokenResponse;
         httpPost.addHeader("Accept", "application/json");
         httpPost.addHeader(new BasicScheme().authenticate(credentials, httpPost, null));
 
         httpPost.setEntity(new UrlEncodedFormEntity(getBodyValues()));
+        CloseableHttpResponse response = null;
+        try {
+            CloseableHttpClient httpClient = clientProvider.getHttpClient();
+            response = httpClient.execute(httpPost);
+            HttpEntity entity = response.getEntity();
+            tokenResponse = getTokenResponse(response, entity);
+        } finally {
+            if (response != null) {
+                response.close();
+            }
+        }
 
-        HttpResponse response = clientProvider.getHttpClient().execute(httpPost);
-        HttpEntity entity = response.getEntity();
 
-        return getTokenResponse(response, entity);
+        return tokenResponse;
+    }
+
+    private OAuth2TokenResponse getEmptyResponseWithErrorObject(AuthenticationException e) {
+        OAuth2TokenResponse tokenResponse;
+        tokenResponse = new OAuth2TokenResponse();
+        AuthorizationError error = new AuthorizationError();
+        error.setError("AuthenticationException");
+        error.setErrorDescription(e.getMessage());
+        return tokenResponse;
     }
 
     private OAuth2TokenResponse getTokenResponse(HttpResponse response, HttpEntity entity) throws IOException {
