@@ -10,8 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.Header;
 
-import java.util.concurrent.TimeUnit;
-
 import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_TYPE;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
@@ -94,7 +92,6 @@ class SimpleTestEventSenderIT {
     @Test
     public void shouldGoAfterTokenOnlyOnce() throws Exception {
         TestEvent testEvent = getTestEvent();
-        System.out.println("===> Running: " + mockServer.isRunning(50, 60000, TimeUnit.DAYS.MILLISECONDS));
         simpleTestEventSender.sendEvent(testEvent);
         simpleTestEventSender.sendEvent(testEvent);
 
