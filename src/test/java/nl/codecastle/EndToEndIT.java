@@ -1,24 +1,34 @@
-package nl.codecastle.extension.communication.http;
+package nl.codecastle;
 
 import nl.codecastle.configuration.PropertiesReader;
+import nl.codecastle.extension.communication.http.MultiThreadedHttpClientProvider;
+import nl.codecastle.extension.communication.http.SimpleTestEventSender;
 import nl.codecastle.extension.communication.http.security.OAuth2TokenProvider;
-import nl.codecastle.extension.model.TestEvent;
-import nl.codecastle.extension.model.TestEventType;
+import nl.codecastle.it.SampleTestIT;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.launcher.Launcher;
+import org.junit.platform.launcher.LauncherDiscoveryRequest;
+import org.junit.platform.launcher.TestExecutionListener;
+import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
+import org.junit.platform.launcher.core.LauncherFactory;
+import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.Header;
+import org.mockserver.model.HttpRequest;
 
 import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_TYPE;
+import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 import static org.mockserver.model.StringBody.exact;
 
 @Tag("integration")
-class SimpleTestEventSenderIT {
+public class EndToEndIT {
+
     private static final String BODY = "{\"localDateTime\":null,\"projectId\":\"testz\",\"runId\":\"1234\",\"testName\":\"onlyTest\",\"className\":\"SomeTestClass\",\"status\":null,\"type\":\"BEFORE_TEST_EXECUTION\"}";
     private static ClientAndServer mockServer;
     private SimpleTestEventSender simpleTestEventSender;
@@ -71,55 +81,39 @@ class SimpleTestEventSenderIT {
                 );
     }
 
-    @Test
-    public void shouldSendRequestWhenAuthorized() throws Exception {
-        TestEvent testEvent = getTestEvent();
 
-        simpleTestEventSender.sendEvent(testEvent);
+    @Test
+    public void testTest() {
+        executeTest();
 
         mockServer.verify(
                 request()
                         .withPath("/uaa/oauth/token")
                         .withMethod("POST")
                 ,
-                request()
-                        .withPath("/api")
-                        .withHeader(new Header("Authorization", "Bearer 77d0c19d-a6ac-4e74-8380-e6ab068c39e6"))
-                        .withMethod("POST")
-                        .withBody(BODY)
-
+                apiRequest(), apiRequest(), apiRequest(), apiRequest(), apiRequest(), apiRequest()
         );
     }
 
-    @Test
-    public void shouldGoAfterTokenOnlyOnce() throws Exception {
-        TestEvent testEvent = getTestEvent();
-        simpleTestEventSender.sendEvent(testEvent);
-        simpleTestEventSender.sendEvent(testEvent);
-
-        mockServer.verify(
-                request()
-                        .withPath("/uaa/oauth/token")
-                        .withMethod("POST")
-                ,
-                request()
-                        .withPath("/api")
-                        .withHeader(new Header("Authorization", "Bearer 77d0c19d-a6ac-4e74-8380-e6ab068c39e6"))
-                ,
-                request()
-                        .withPath("/api")
-                        .withHeader(new Header("Authorization", "Bearer 77d0c19d-a6ac-4e74-8380-e6ab068c39e6"))
-
-        );
+    private HttpRequest apiRequest() {
+        return request()
+                .withPath("/api")
+                .withHeader(new Header("Authorization", "Bearer 77d0c19d-a6ac-4e74-8380-e6ab068c39e6"))
+                .withMethod("POST");
     }
 
-    private TestEvent getTestEvent() {
-        TestEvent testEvent = new TestEvent();
-        testEvent.setRunId("1234");
-        testEvent.setType(TestEventType.BEFORE_TEST_EXECUTION);
-        testEvent.setClassName("SomeTestClass");
-        testEvent.setProjectId("testz");
-        testEvent.setTestName("onlyTest");
-        return testEvent;
+    private void executeTest() {
+        LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
+                .selectors(
+                        selectClass(SampleTestIT.class)
+                )
+                .build();
+
+        Launcher launcher = LauncherFactory.create();
+
+        TestExecutionListener listener = new SummaryGeneratingListener();
+        launcher.registerTestExecutionListeners(listener);
+
+        launcher.execute(request);
     }
 }

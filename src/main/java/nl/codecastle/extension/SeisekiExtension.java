@@ -1,5 +1,6 @@
 package nl.codecastle.extension;
 
+import nl.codecastle.collector.LogCollector;
 import nl.codecastle.configuration.PropertiesReader;
 import nl.codecastle.extension.communication.http.MultiThreadedHttpClientProvider;
 import nl.codecastle.extension.communication.http.SimpleTestEventSender;
@@ -33,6 +34,7 @@ public class SeisekiExtension implements BeforeAllCallback, AfterAllCallback,
     private static String uuid = UUID.randomUUID().toString();
     private final TestEventSender eventSender;
     private final PropertiesReader propertiesReader;
+    private LogCollector logCollector = new LogCollector();
 
     public SeisekiExtension() {
         this(new SimpleTestEventSender(new MultiThreadedHttpClientProvider(), new OAuth2TokenProvider(), new PropertiesReader("seiseki.properties")), new PropertiesReader("seiseki.properties"));
@@ -55,6 +57,7 @@ public class SeisekiExtension implements BeforeAllCallback, AfterAllCallback,
 
     @Override
     public void afterTestExecution(ExtensionContext extensionContext) throws Exception {
+        logCollector.stop();
         sendTestMethodEvent(extensionContext, TestEventType.AFTER_TEST_EXECUTION);
     }
 
@@ -77,6 +80,7 @@ public class SeisekiExtension implements BeforeAllCallback, AfterAllCallback,
 
     @Override
     public void beforeTestExecution(ExtensionContext extensionContext) throws Exception {
+        logCollector.start();
         sendTestMethodEvent(extensionContext, TestEventType.BEFORE_TEST_EXECUTION);
     }
 
