@@ -10,7 +10,7 @@ import java.util.List;
 public class LogCollector {
     private ByteArrayOutputStream arrayOutputStream;
     private PrintStream sysOut;
-    private boolean capturing;
+    private boolean capturing = false;
 
     public void start() {
         if (capturing) {

@@ -44,7 +44,6 @@ public class EndToEndIT {
     @AfterEach
     public void tearDown() {
         mockServer.stop();
-
     }
 
     private void setupHappyFlowMockServer() {

@@ -35,6 +35,8 @@ public class TestEvent {
      */
     private TestEventType type;
 
+    private String log;
+
     public LocalDateTime getLocalDateTime() {
         return localDateTime;
     }
@@ -89,5 +91,13 @@ public class TestEvent {
 
     public void setType(TestEventType type) {
         this.type = type;
+    }
+
+    public String getLog() {
+        return log;
+    }
+
+    public void setLog(String log) {
+        this.log = log;
     }
 }
