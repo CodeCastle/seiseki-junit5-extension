@@ -50,6 +50,8 @@ public class SimpleTestEventSender implements TestEventSender {
         LOG.trace("Executing post.");
         CloseableHttpResponse response = httpClient.execute(post);
         LOG.debug("Finished executing post!");
-        response.close();
+        if (response != null) {
+            response.close();
+        }
     }
 }

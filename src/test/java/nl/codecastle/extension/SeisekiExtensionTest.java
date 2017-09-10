@@ -134,7 +134,7 @@ public class SeisekiExtensionTest {
         assertThat(testEvent.getClassName()).isEqualTo(testClass.getClass().getName());
         String localDateTime = testEvent.getLocalDateTime();
         LocalDateTime localDateTimeParsed = LocalDateTime.parse(localDateTime, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        assertThat(localDateTimeParsed).isBeforeOrEqualTo(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE));
+        assertThat(localDateTimeParsed).isBeforeOrEqualTo(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         assertThat(testEvent.getProjectId()).isEqualTo(TEST_PROJECT_NAME);
         assertThat(testEvent.getType()).isEqualTo(testEventType);
         assertThat(testEvent.getRunId()).isNotEmpty();

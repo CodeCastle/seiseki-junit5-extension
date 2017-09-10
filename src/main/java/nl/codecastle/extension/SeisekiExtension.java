@@ -109,7 +109,8 @@ public class SeisekiExtension implements BeforeAllCallback, AfterAllCallback,
         TestEvent testingEvent = new TestEvent();
         testingEvent.setClassName(className);
         testingEvent.setRunId(uuid);
-        testingEvent.setLocalDateTime(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE));
+        String formattedDateTime = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        testingEvent.setLocalDateTime(formattedDateTime);
         testingEvent.setProjectId(propertiesReader.getValue("project.name"));
         testingEvent.setClassName(className);
         testingEvent.setType(eventType);
