@@ -1,9 +1,9 @@
-package nl.codecastle.extension.communication.http;
+package nl.codecastle.http;
 
 import nl.codecastle.configuration.PropertiesReader;
-import nl.codecastle.extension.communication.http.security.OAuth2TokenProvider;
 import nl.codecastle.extension.model.TestEvent;
 import nl.codecastle.extension.model.TestEventType;
+import nl.codecastle.http.security.OAuth2TokenProvider;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;

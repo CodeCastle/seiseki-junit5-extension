@@ -1,4 +1,4 @@
-package nl.codecastle.extension.communication.http;
+package nl.codecastle.http;
 
 import nl.codecastle.extension.model.TestEvent;
 

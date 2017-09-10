@@ -1,103 +1,139 @@
 package nl.codecastle.extension.model;
 
-import java.time.LocalDateTime;
-
 /**
  * Object representing the test event.
  */
+
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonPropertyOrder({
+        "localDateTime",
+        "projectId",
+        "runId",
+        "testName",
+        "className",
+        "status",
+        "type",
+        "log"
+})
 public class TestEvent {
-    /**
-     * The time stamp of the event.
-     */
-    private LocalDateTime localDateTime;
-    /**
-     * The ID of the project this test belongs to. This project ID should be read from a property file.
-     */
+
+    @JsonProperty("localDateTime")
+    private String localDateTime;
+    @JsonProperty("projectId")
     private String projectId;
-    /**
-     * Each test run has a unique, newly generated ID.
-     */
+    @JsonProperty("runId")
     private String runId;
-    /**
-     * Name of the test. The name is actually the name of the test method.
-     */
+    @JsonProperty("testName")
     private String testName;
-    /**
-     * Name of the test class the test belongs to.
-     */
+    @JsonProperty("className")
     private String className;
-    /**
-     * The status of the test.
-     */
-    private String status;
-    /**
-     * The type of the event.
-     */
+    @JsonProperty("status")
+    private Object status;
+    @JsonProperty("type")
     private TestEventType type;
+    @JsonProperty("log")
+    private Object log;
+    @JsonIgnore
+    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    private String log;
-
-    public LocalDateTime getLocalDateTime() {
+    @JsonProperty("localDateTime")
+    public String getLocalDateTime() {
         return localDateTime;
     }
 
-    public void setLocalDateTime(LocalDateTime localDateTime) {
+    @JsonProperty("localDateTime")
+    public void setLocalDateTime(String localDateTime) {
         this.localDateTime = localDateTime;
     }
 
+    @JsonProperty("projectId")
     public String getProjectId() {
         return projectId;
     }
 
+    @JsonProperty("projectId")
     public void setProjectId(String projectId) {
         this.projectId = projectId;
     }
 
+    @JsonProperty("runId")
     public String getRunId() {
         return runId;
     }
 
+    @JsonProperty("runId")
     public void setRunId(String runId) {
         this.runId = runId;
     }
 
+    @JsonProperty("testName")
     public String getTestName() {
         return testName;
     }
 
+    @JsonProperty("testName")
     public void setTestName(String testName) {
         this.testName = testName;
     }
 
+    @JsonProperty("className")
     public String getClassName() {
         return className;
     }
 
+    @JsonProperty("className")
     public void setClassName(String className) {
         this.className = className;
     }
 
-    public String getStatus() {
+    @JsonProperty("status")
+    public Object getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    @JsonProperty("status")
+    public void setStatus(Object status) {
         this.status = status;
     }
 
+    @JsonProperty("type")
     public TestEventType getType() {
         return type;
     }
 
+    @JsonProperty("type")
     public void setType(TestEventType type) {
         this.type = type;
     }
 
-    public String getLog() {
+    @JsonProperty("log")
+    public Object getLog() {
         return log;
     }
 
-    public void setLog(String log) {
+    @JsonProperty("log")
+    public void setLog(Object log) {
         this.log = log;
     }
+
+    @JsonAnyGetter
+    public Map<String, Object> getAdditionalProperties() {
+        return this.additionalProperties;
+    }
+
+    @JsonAnySetter
+    public void setAdditionalProperty(String name, Object value) {
+        this.additionalProperties.put(name, value);
+    }
+
 }

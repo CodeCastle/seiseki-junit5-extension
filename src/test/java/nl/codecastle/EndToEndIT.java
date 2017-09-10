@@ -1,10 +1,10 @@
 package nl.codecastle;
 
 import nl.codecastle.configuration.PropertiesReader;
-import nl.codecastle.extension.communication.http.MultiThreadedHttpClientProvider;
-import nl.codecastle.extension.communication.http.SimpleTestEventSender;
-import nl.codecastle.extension.communication.http.security.OAuth2TokenProvider;
-import nl.codecastle.it.SampleTestIT;
+import nl.codecastle.http.MultiThreadedHttpClientProvider;
+import nl.codecastle.http.SimpleTestEventSender;
+import nl.codecastle.http.security.OAuth2TokenProvider;
+import nl.codecastle.it.SampleTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -104,7 +104,7 @@ public class EndToEndIT {
     private void executeTest() {
         LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
                 .selectors(
-                        selectClass(SampleTestIT.class)
+                        selectClass(SampleTest.class)
                 )
                 .build();
 

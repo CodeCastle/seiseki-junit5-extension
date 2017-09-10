@@ -1,13 +1,13 @@
-package nl.codecastle.extension.communication.http;
+package nl.codecastle.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import name.falgout.jeffrey.testing.junit5.MockitoExtension;
 import nl.codecastle.configuration.PropertiesReader;
-import nl.codecastle.extension.communication.http.security.TokenProvider;
-import nl.codecastle.extension.communication.http.security.models.AuthorizationError;
-import nl.codecastle.extension.communication.http.security.models.OAuth2TokenResponse;
 import nl.codecastle.extension.model.TestEvent;
 import nl.codecastle.extension.model.TestEventType;
+import nl.codecastle.http.security.TokenProvider;
+import nl.codecastle.http.security.models.AuthorizationError;
+import nl.codecastle.http.security.models.OAuth2TokenResponse;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.auth.AuthenticationException;
@@ -26,6 +26,7 @@ import org.mockito.Mock;
 import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -51,7 +52,7 @@ class SimpleTestEventSenderTest {
         TestEvent sampleEvent = new TestEvent();
         sampleEvent.setTestName(sampleTest);
         sampleEvent.setClassName(className);
-        sampleEvent.setLocalDateTime(LocalDateTime.now());
+        sampleEvent.setLocalDateTime(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE));
         sampleEvent.setProjectId(seiseki);
         sampleEvent.setType(beforeTestExecution);
         sampleEvent.setRunId(runId);

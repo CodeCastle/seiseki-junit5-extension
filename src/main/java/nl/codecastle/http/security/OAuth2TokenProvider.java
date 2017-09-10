@@ -1,11 +1,11 @@
-package nl.codecastle.extension.communication.http.security;
+package nl.codecastle.http.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.codecastle.configuration.PropertiesReader;
-import nl.codecastle.extension.communication.http.HttpClientProvider;
-import nl.codecastle.extension.communication.http.MultiThreadedHttpClientProvider;
-import nl.codecastle.extension.communication.http.security.models.AuthorizationError;
-import nl.codecastle.extension.communication.http.security.models.OAuth2TokenResponse;
+import nl.codecastle.http.HttpClientProvider;
+import nl.codecastle.http.MultiThreadedHttpClientProvider;
+import nl.codecastle.http.security.models.AuthorizationError;
+import nl.codecastle.http.security.models.OAuth2TokenResponse;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
