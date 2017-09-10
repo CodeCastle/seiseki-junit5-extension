@@ -7,8 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ExtendWith(SeisekiExtension.class)
-public class SampleTest {
-    private final static Logger LOG = LoggerFactory.getLogger(SampleTest.class);
+public class SampleTestIT {
+    private final static Logger LOG = LoggerFactory.getLogger(SampleTestIT.class);
     @Test
     public void verySimpleTest() {
         LOG.debug("Running a test!");

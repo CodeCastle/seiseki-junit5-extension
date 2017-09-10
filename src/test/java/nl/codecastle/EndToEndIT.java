@@ -4,7 +4,7 @@ import nl.codecastle.configuration.PropertiesReader;
 import nl.codecastle.http.MultiThreadedHttpClientProvider;
 import nl.codecastle.http.SimpleTestEventSender;
 import nl.codecastle.http.security.OAuth2TokenProvider;
-import nl.codecastle.it.SampleTest;
+import nl.codecastle.it.SampleTestIT;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -104,7 +104,7 @@ public class EndToEndIT {
     private void executeTest() {
         LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
                 .selectors(
-                        selectClass(SampleTest.class)
+                        selectClass(SampleTestIT.class)
                 )
                 .build();
 
