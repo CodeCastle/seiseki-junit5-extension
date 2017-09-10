@@ -1,5 +1,8 @@
 package nl.codecastle.appenders.models;
 
+/**
+ * Represents the log entry that is sent to the server.
+ */
 public class LogEntry {
     private String runId;
     private String className;

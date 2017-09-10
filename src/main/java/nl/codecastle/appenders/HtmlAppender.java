@@ -19,21 +19,44 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+/**
+ * {@link AppenderBase} extension that sends all the logs to the server.
+ */
 public class HtmlAppender extends AppenderBase<ILoggingEvent> {
     private static final Logger LOG = LoggerFactory.getLogger(HtmlAppender.class);
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private final TokenProvider tokenProvider = new OAuth2TokenProvider();
-    private CloseableHttpClient httpclient;
+    private CloseableHttpClient httpClient;
+    private OAuth2TokenResponse oAuth2TokenResponse;
+    private boolean authorized = true;
 
+    @Override
     public void start() {
         MultiThreadedHttpClientProvider provider = new MultiThreadedHttpClientProvider();
-        httpclient = provider.getHttpClient();
+        httpClient = provider.getHttpClient();
+        try {
+            oAuth2TokenResponse = getOAuth2TokenResponse();
+        } catch (UnauthorizedException e) {
+            authorized = false;
+            LOG.error("Unauthorized access to API", e);
+        }
         super.start();
     }
 
+    @Override
     protected void append(ILoggingEvent eventObject) {
-        HttpPost httpPost = new HttpPost("http://localhost:8585/uaa/log");
+        if (authorized) {
+            sendLogToServer(eventObject);
+        }
+    }
 
+    /**
+     * Sends the log to the server.
+     *
+     * @param eventObject the log event received from logback
+     */
+    private void sendLogToServer(ILoggingEvent eventObject) {
+        HttpPost httpPost = new HttpPost("http://localhost:8585/uaa/log");
         LogEntry logEntry = new LogEntry();
         logEntry.setClassName(eventObject.getLoggerName());
         logEntry.setTestName(eventObject.getLoggerName());
@@ -46,23 +69,30 @@ public class HtmlAppender extends AppenderBase<ILoggingEvent> {
 
             httpPost.setHeader("Accept", "application/json");
             httpPost.setHeader("Content-type", "application/json");
-            OAuth2TokenResponse token = tokenProvider.getToken();
-            if (token.getAuthorizationError() != null) {
-                throw new UnauthorizedException("Unauthorized: " + token.getAuthorizationError().getErrorDescription());
-            }
-            httpPost.setHeader("Authorization", "Bearer " + token.getAccessToken());
+            httpPost.setHeader("Authorization", "Bearer " + oAuth2TokenResponse.getAccessToken());
 
-            CloseableHttpResponse response = httpclient.execute(httpPost);
-            LOG.trace("Log response status: {}", response != null ? response.getStatusLine().getStatusCode() : "");
+            LOG.trace("Posting a log.");
+            CloseableHttpResponse response = httpClient.execute(httpPost);
+            LOG.debug("Log response status: {}", response != null ? response.getStatusLine().getStatusCode() : "");
             if (response != null) {
                 response.close();
             }
-
-            response.close();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (UnauthorizedException e) {
-            LOG.error("Unauthorized access to API", e);
         }
+    }
+
+    private OAuth2TokenResponse getOAuth2TokenResponse() throws UnauthorizedException {
+        OAuth2TokenResponse token = null;
+        try {
+            token = tokenProvider.getToken();
+
+            if (token.getAuthorizationError() != null) {
+                throw new UnauthorizedException("Unauthorized: " + token.getAuthorizationError().getErrorDescription());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return token;
     }
 }
