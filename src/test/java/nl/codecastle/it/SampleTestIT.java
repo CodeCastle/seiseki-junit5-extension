@@ -12,6 +12,15 @@ public class SampleTestIT {
     @Test
     public void verySimpleTest() {
         LOG.debug("Running a test!");
-        System.out.println("Running very simple test.");
+    }
+
+    @Test
+    public void verySimpleTestTwo() {
+        LOG.debug("Running a test!");
+        aVerySimpleMethod();
+    }
+
+    private void aVerySimpleMethod() {
+        LOG.debug("Logging from a very simple method!");
     }
 }

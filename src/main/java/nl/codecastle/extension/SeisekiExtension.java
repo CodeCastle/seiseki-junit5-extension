@@ -89,11 +89,8 @@ public class SeisekiExtension implements BeforeAllCallback, AfterAllCallback,
         sendTestMethodEvent(extensionContext, TestEventType.BEFORE_TEST_SETUP);
     }
 
-    @Override
-    public void beforeTestExecution(ExtensionContext extensionContext) throws Exception {
-        String className = extensionContext.getTestClass().get().getTypeName();
-        LOG.debug("[{}] [{}] [{}] [{}]", uuid, className, extensionContext.getDisplayName(), "AFTER EXECUTION");
-        sendTestMethodEvent(extensionContext, TestEventType.BEFORE_TEST_EXECUTION);
+    public static String getUuid() {
+        return uuid;
     }
 
     private void sendTestMethodEvent(ExtensionContext extensionContext, TestEventType eventType)
@@ -127,5 +124,12 @@ public class SeisekiExtension implements BeforeAllCallback, AfterAllCallback,
         TestEvent testingEvent = getClassTestEvent(className, uuid, eventType);
         testingEvent.setTestName(methodName);
         return testingEvent;
+    }
+
+    @Override
+    public void beforeTestExecution(ExtensionContext extensionContext) throws Exception {
+        String className = extensionContext.getTestClass().get().getTypeName();
+        LOG.debug("[{}] [{}] [{}] [{}]", uuid, className, extensionContext.getDisplayName(), "BEFORE EXECUTION");
+        sendTestMethodEvent(extensionContext, TestEventType.BEFORE_TEST_EXECUTION);
     }
 }

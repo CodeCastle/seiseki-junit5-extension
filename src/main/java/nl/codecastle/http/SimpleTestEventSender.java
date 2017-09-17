@@ -49,7 +49,7 @@ public class SimpleTestEventSender implements TestEventSender {
         post.setHeader("Authorization", "Bearer " + token.getAccessToken());
         LOG.trace("Executing post.");
         CloseableHttpResponse response = httpClient.execute(post);
-        LOG.debug("Finished executing post!");
+        LOG.trace("Finished executing post!");
         if (response != null) {
             response.close();
         }
