@@ -9,6 +9,19 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
+    <distributionManagement>
+        <repository>
+            <id>aws-release</id>
+            <name>AWS Release Repository</name>
+            <url>s3://programirame.org/release</url>
+        </repository>
+        <snapshotRepository>
+            <id>aws-snapshot</id>
+            <name>AWS Snapshot Repository</name>
+            <url>s3://programirame.org/snapshot</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <groupId>nl.codecastle</groupId>
     <artifactId>seiseki-junit5-extension</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -76,7 +89,19 @@
     </dependencies>
 
     <build>
+        <extensions>
+            <extension>
+                <groupId>org.springframework.build</groupId>
+                <artifactId>aws-maven</artifactId>
+                <version>5.0.0.RELEASE</version>
+            </extension>
+        </extensions>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
+            </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.19</version>
@@ -114,4 +139,10 @@
             </plugin>
         </plugins>
     </build>
+
+    <scm>
+        <connection>scm:git:git@github.com/CodeCastle/seiseki-junit5-extension.git</connection>
+        <url>scm:git:git@github.com/CodeCastle/seiseki-junit5-extension.git</url>
+        <developerConnection>scm:git:git@github.com/CodeCastle/seiseki-junit5-extension.git</developerConnection>
+    </scm>
 </project>
