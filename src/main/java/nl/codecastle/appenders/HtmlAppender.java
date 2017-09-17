@@ -5,6 +5,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.codecastle.appenders.models.LogEntry;
+import nl.codecastle.configuration.PropertiesReader;
 import nl.codecastle.extension.SeisekiExtension;
 import nl.codecastle.http.MultiThreadedHttpClientProvider;
 import nl.codecastle.http.UnauthorizedException;
@@ -31,6 +32,8 @@ public class HtmlAppender extends AppenderBase<ILoggingEvent> {
     private CloseableHttpClient httpClient;
     private OAuth2TokenResponse oAuth2TokenResponse;
     private boolean authorized = true;
+    private static final PropertiesReader PROPERTIES_READER = new PropertiesReader("seiseki.properties");
+    private static final String LOG_ENDPOINT = PROPERTIES_READER.getValue("server.endpoint") + "/log";
 
     @Override
     public void start() {
@@ -58,7 +61,7 @@ public class HtmlAppender extends AppenderBase<ILoggingEvent> {
      * @param eventObject the log event received from logback
      */
     private void sendLogToServer(ILoggingEvent eventObject) {
-        HttpPost httpPost = new HttpPost("http://localhost:8585/uaa/log");
+        HttpPost httpPost = new HttpPost(LOG_ENDPOINT);
         ArrayList<StackTraceElement> testCalls = getStackTraceElements(eventObject);
 
         LogEntry logEntry = new LogEntry();
