@@ -139,9 +139,9 @@
     </build>
 
     <scm>
-        <connection>scm:git:git@github.com/CodeCastle/seiseki-junit5-extension.git</connection>
-        <url>scm:git:git@github.com/CodeCastle/seiseki-junit5-extension.git</url>
-        <developerConnection>scm:git:git@github.com/CodeCastle/seiseki-junit5-extension.git</developerConnection>
+        <connection>scm:git:git@github.com:CodeCastle/seiseki-junit5-extension.git</connection>
+        <url>scm:git:git@github.com:CodeCastle/seiseki-junit5-extension.git</url>
+        <developerConnection>scm:git:git@github.com:CodeCastle/seiseki-junit5-extension.git</developerConnection>
       <tag>seiseki-junit5-extension-0.0.1</tag>
   </scm>
 </project>
