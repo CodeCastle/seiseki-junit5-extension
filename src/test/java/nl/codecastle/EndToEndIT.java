@@ -1,9 +1,9 @@
 package nl.codecastle;
 
 import nl.codecastle.configuration.PropertiesReader;
-import nl.codecastle.extension.communication.http.MultiThreadedHttpClientProvider;
-import nl.codecastle.extension.communication.http.SimpleTestEventSender;
-import nl.codecastle.extension.communication.http.security.OAuth2TokenProvider;
+import nl.codecastle.http.MultiThreadedHttpClientProvider;
+import nl.codecastle.http.SimpleTestEventSender;
+import nl.codecastle.http.security.OAuth2TokenProvider;
 import nl.codecastle.it.SampleTestIT;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +44,6 @@ public class EndToEndIT {
     @AfterEach
     public void tearDown() {
         mockServer.stop();
-
     }
 
     private void setupHappyFlowMockServer() {

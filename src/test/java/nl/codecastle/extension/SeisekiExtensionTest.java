@@ -2,9 +2,9 @@ package nl.codecastle.extension;
 
 import name.falgout.jeffrey.testing.junit5.MockitoExtension;
 import nl.codecastle.configuration.PropertiesReader;
-import nl.codecastle.extension.communication.http.SimpleTestEventSender;
 import nl.codecastle.extension.model.TestEvent;
 import nl.codecastle.extension.model.TestEventType;
+import nl.codecastle.http.SimpleTestEventSender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +14,7 @@ import org.mockito.Mock;
 
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -131,7 +132,9 @@ public class SeisekiExtensionTest {
 
     private void assertGeneralTestEventParameters(TestEvent testEvent, TestEventType testEventType) {
         assertThat(testEvent.getClassName()).isEqualTo(testClass.getClass().getName());
-        assertThat(testEvent.getLocalDateTime()).isBeforeOrEqualTo(LocalDateTime.now());
+        String localDateTime = testEvent.getLocalDateTime();
+        LocalDateTime localDateTimeParsed = LocalDateTime.parse(localDateTime, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        assertThat(localDateTimeParsed).isBeforeOrEqualTo(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         assertThat(testEvent.getProjectId()).isEqualTo(TEST_PROJECT_NAME);
         assertThat(testEvent.getType()).isEqualTo(testEventType);
         assertThat(testEvent.getRunId()).isNotEmpty();

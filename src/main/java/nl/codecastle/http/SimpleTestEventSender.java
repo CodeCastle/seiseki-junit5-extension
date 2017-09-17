@@ -1,13 +1,16 @@
-package nl.codecastle.extension.communication.http;
+package nl.codecastle.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.codecastle.configuration.PropertiesReader;
-import nl.codecastle.extension.communication.http.security.TokenProvider;
-import nl.codecastle.extension.communication.http.security.models.OAuth2TokenResponse;
 import nl.codecastle.extension.model.TestEvent;
-import org.apache.http.client.HttpClient;
+import nl.codecastle.http.security.TokenProvider;
+import nl.codecastle.http.security.models.OAuth2TokenResponse;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -16,11 +19,11 @@ import java.io.IOException;
  * and send all the test events.
  */
 public class SimpleTestEventSender implements TestEventSender {
+    private static final Logger LOG = LoggerFactory.getLogger(SimpleTestEventSender.class);
     private static ObjectMapper objectMapper = new ObjectMapper();
     private final TokenProvider tokenProvider;
     private final PropertiesReader propertiesReader;
-    private HttpClient httpClient;
-
+    private CloseableHttpClient httpClient;
     public SimpleTestEventSender(HttpClientProvider httpClientProvider, TokenProvider tokenProvider,
                                  PropertiesReader propertiesReader) {
 
@@ -31,7 +34,7 @@ public class SimpleTestEventSender implements TestEventSender {
 
     @Override
     public void sendEvent(TestEvent testingEvent) throws IOException, UnauthorizedException {
-        HttpPost post = new HttpPost(propertiesReader.getValue("server.endpoint"));
+        HttpPost post = new HttpPost(propertiesReader.getValue("server.endpoint") + "/event");
 
         String eventJson = objectMapper.writeValueAsString(testingEvent);
 
@@ -44,6 +47,11 @@ public class SimpleTestEventSender implements TestEventSender {
             throw new UnauthorizedException("Unauthorized: " + token.getAuthorizationError().getErrorDescription());
         }
         post.setHeader("Authorization", "Bearer " + token.getAccessToken());
-        httpClient.execute(post);
+        LOG.trace("Executing post.");
+        CloseableHttpResponse response = httpClient.execute(post);
+        LOG.trace("Finished executing post!");
+        if (response != null) {
+            response.close();
+        }
     }
 }

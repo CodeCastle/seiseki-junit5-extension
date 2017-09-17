@@ -1,4 +1,4 @@
-package nl.codecastle.extension.communication.http.security.models;
+package nl.codecastle.http.security.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

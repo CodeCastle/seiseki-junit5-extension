@@ -1,4 +1,4 @@
-package nl.codecastle.extension.communication.http;
+package nl.codecastle.http;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.CloseableHttpClient;

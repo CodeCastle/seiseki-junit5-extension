@@ -1,4 +1,4 @@
-package nl.codecastle.extension.communication.http;
+package nl.codecastle.http;
 
 public class UnauthorizedException extends Exception {
     public UnauthorizedException(String message) {
