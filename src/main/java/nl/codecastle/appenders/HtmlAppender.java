@@ -7,7 +7,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.codecastle.appenders.models.LogEntry;
 import nl.codecastle.configuration.PropertiesReader;
 import nl.codecastle.extension.SeisekiExtension;
+import nl.codecastle.http.HttpClientProvider;
 import nl.codecastle.http.MultiThreadedHttpClientProvider;
+import nl.codecastle.http.SeisekiServer;
+import nl.codecastle.http.TestLogServer;
 import nl.codecastle.http.UnauthorizedException;
 import nl.codecastle.http.security.OAuth2TokenProvider;
 import nl.codecastle.http.security.TokenProvider;
@@ -31,21 +34,28 @@ public class HtmlAppender extends AppenderBase<ILoggingEvent> {
     private final TokenProvider tokenProvider = new OAuth2TokenProvider();
     private CloseableHttpClient httpClient;
     private OAuth2TokenResponse oAuth2TokenResponse;
-    private boolean authorized = true;
+    private boolean authorized = false;
     private static final PropertiesReader PROPERTIES_READER = new PropertiesReader("seiseki.properties");
     private static final String LOG_ENDPOINT = PROPERTIES_READER.getValue("server.endpoint") + "/log";
+    private static final TestLogServer server = new SeisekiServer();
 
     @Override
     public void start() {
         MultiThreadedHttpClientProvider provider = new MultiThreadedHttpClientProvider();
+        if (server.isAvailable()) {
+            prepareHttpClient(provider);
+        }
+        super.start();
+    }
+
+    private void prepareHttpClient(HttpClientProvider provider) {
         httpClient = provider.getHttpClient();
         try {
             oAuth2TokenResponse = getOAuth2TokenResponse();
+            authorized = true;
         } catch (UnauthorizedException e) {
-            authorized = false;
             LOG.error("Unauthorized access to API", e);
         }
-        super.start();
     }
 
     @Override

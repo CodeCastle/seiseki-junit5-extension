@@ -23,17 +23,27 @@ public class SimpleTestEventSender implements TestEventSender {
     private static ObjectMapper objectMapper = new ObjectMapper();
     private final TokenProvider tokenProvider;
     private final PropertiesReader propertiesReader;
-    private CloseableHttpClient httpClient;
+    private final CloseableHttpClient httpClient;
+    private final TestLogServer server;
+
     public SimpleTestEventSender(HttpClientProvider httpClientProvider, TokenProvider tokenProvider,
                                  PropertiesReader propertiesReader) {
+        this(httpClientProvider.getHttpClient(), tokenProvider, propertiesReader, new SeisekiServer());
+    }
 
-        this.httpClient = httpClientProvider.getHttpClient();
+    SimpleTestEventSender(CloseableHttpClient httpClient, TokenProvider tokenProvider,
+                          PropertiesReader propertiesReader, TestLogServer server) {
+        this.httpClient = httpClient;
         this.tokenProvider = tokenProvider;
         this.propertiesReader = propertiesReader;
+        this.server = server;
     }
 
     @Override
     public void sendEvent(TestEvent testingEvent) throws IOException, UnauthorizedException {
+        if (!server.isAvailable()) {
+            return;
+        }
         HttpPost post = new HttpPost(propertiesReader.getValue("server.endpoint") + "/event");
 
         String eventJson = objectMapper.writeValueAsString(testingEvent);

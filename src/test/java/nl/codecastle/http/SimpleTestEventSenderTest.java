@@ -11,7 +11,6 @@ import nl.codecastle.http.security.models.OAuth2TokenResponse;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.auth.AuthenticationException;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
@@ -38,7 +37,7 @@ import static org.mockito.Mockito.when;
 class SimpleTestEventSenderTest {
 
     private static TestEvent dummyTestEvent;
-    private HttpClient httpClientMock;
+    private CloseableHttpClient httpClientMock;
     private TestEventSender testEventSender;
     private TokenProvider tokenProviderMock;
 
@@ -61,12 +60,13 @@ class SimpleTestEventSenderTest {
 
     @BeforeEach
     public void setup(@Mock CloseableHttpClient httpClient, @Mock HttpClientProvider provider, @Mock TokenProvider tokenProvider,
-                      @Mock PropertiesReader propertiesReader)
+                      @Mock PropertiesReader propertiesReader, @Mock SeisekiServer server)
             throws IOException, AuthenticationException {
         tokenProviderMock = tokenProvider;
         httpClientMock = httpClient;
+        when(server.isAvailable()).thenReturn(true);
         when(provider.getHttpClient()).thenReturn(httpClient);
-        testEventSender = new SimpleTestEventSender(provider, tokenProviderMock, propertiesReader);
+        testEventSender = new SimpleTestEventSender(httpClientMock, tokenProviderMock, propertiesReader, server);
 
         when(propertiesReader.getValue("server.endpoint")).thenReturn("http://testhost:8383/api");
         when(propertiesReader.getValue("server.token.endpoint")).thenReturn("http://localhost:8383/uaa/oauth/token");
