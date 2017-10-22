@@ -22,7 +22,7 @@
 
     <groupId>nl.codecastle</groupId>
     <artifactId>seiseki-junit5-extension</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.3</version>
     <dependencies>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -142,6 +142,6 @@
         <connection>scm:git:git@github.com:CodeCastle/seiseki-junit5-extension.git</connection>
         <url>scm:git:git@github.com:CodeCastle/seiseki-junit5-extension.git</url>
         <developerConnection>scm:git:git@github.com:CodeCastle/seiseki-junit5-extension.git</developerConnection>
-      <tag>seiseki-junit5-extension-0.0.1</tag>
+      <tag>seiseki-junit5-extension-0.0.3</tag>
   </scm>
 </project>
